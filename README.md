@@ -16,16 +16,19 @@ It requires a [wordpress installation](https://wordpress.org/) and [wocommerce i
 
 
 # RoadMap
-- Unit and E2E tests using codeception
+- Unit and E2E tests using codeception or PHPUnit
 - Adding email authentication to stop brute force attackss.
 - Uptime monitoring
 
 
 
-# Not a Developer
-
-If you are not a developer, please you can reach me via for custom wordpress plugin and theme development. Available For Hire [contact](https://tupimelab.com)
+# Available For Hire
+- Website Development
+- Custom Wordpress Plugin and Theme development
+- Malware removal and cleaning services
+- Website Optimisation
+[contact Me](https://tupimelab.com)
 
 # Developer
-If you are facing a challenge with your project, you can always seek help 
-from me at affordable rate.
+Please feel free to use this simple plugin structure as skeleton for 
+your project especially those who prefer OOP methods
