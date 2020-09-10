@@ -243,5 +243,3 @@ class Hook_Registry {
 }
 
 new Hook_Registry();
-
-//readme --> Add unit tests an codeception n also a blog tutorial for this.
