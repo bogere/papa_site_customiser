@@ -42,15 +42,20 @@ class Hook_Registry {
         add_action('wp_ajax_nopriv_package_item_action', [$this , 'papa_add_product_to_cart'] ); //non-logged in users
         add_action('wp_ajax_package_item_action', [$this, 'papa_add_product_to_cart' ]); //logged in uers
         //contact form.
-        add_action('wp_ajax_nopriv_contact_form', [$this, 'papa_send_mail_from_contact_form']);
-        
+        add_action('wp_ajax_nopriv_contact_form_action', [$this, 'papa_send_mail_from_contact_form']);
+        add_action('wp_ajax_contact_form_action', [$this, 'papa_send_mail_from_contact_form']);
+
+        //add_action('admin_init', [$this, 'papa_test_the_error_log']);
+        add_action('wp_mail_failed', [$this, 'papa_log_failed_to_send_email'], 10, 1);
         //FILTERS
         add_filter( 'recovery_mode_email', [$this, 'send_error_alert_to_developer'], 10, 2 );
     }
 
     public  function  papa_load_custom_scripts(){
         //wp_enqueue_style('papa-site-css', PAPA_SITE_PLUGIN_URL.'assets/css/papa-site.css' );
-        wp_enqueue_script('papa-site-js', PAPA_SITE_PLUGIN_URL.'assets/js/papa.js', array('jquery'));
+        wp_enqueue_style('papa-tooltip-css', PAPA_SITE_PLUGIN_URL.'assets/vendor/tooltip/tooltip.css');
+        wp_enqueue_script('papa-tooltip-js', PAPA_SITE_PLUGIN_URL.'assets/vendor/tooltip/tooltip.js', array('jquery'), null);
+        wp_enqueue_script('papa-site-js', PAPA_SITE_PLUGIN_URL.'assets/js/papa.js', array('jquery','papa-tooltip-js'), null);
         //localize the script to your domain name, so that you can reference the url to admin-ajax.php file easily
         wp_localize_script('papa-site-js', 'siteData', array(
             'ajaxurl' =>admin_url('admin-ajax.php')
@@ -118,11 +123,18 @@ class Hook_Registry {
 
     public function papa_send_mail_from_contact_form(){
         $response = array();
+        //error_log('Testing teh contact form...');
         if (isset($_POST['answer'])) {
-            if ($_POST['name'] || $_POST['email'] || $_POST['message']) {
+            $name = $_POST['name'];
+            $email = $_POST['email'];
+            $message = $_POST['message'];
+            $website = $_POST['website'];
+
+            if (empty($name) || empty($email) || empty($message) || empty($website)) {
+                # code..
                 $response = array(
                    'success' => false,
-                   'message' => 'Some input field is empty'
+                   'message' => 'Some input field are empty'
                 );
 
                 wp_send_json_error($response);
@@ -148,21 +160,23 @@ class Hook_Registry {
             //send them to the admin email.
             //php mailer variables
             $to = get_option('admin_email');
-            $subject = "Someone sent a message from ".get_bloginfo('name');
+            //$subject = "Someone sent a message from ".get_bloginfo('name');
+            $subject = "Requesting for review for my  website: ".$website;
             $headers = 'From: '. $email . "\r\n" . 'Reply-To: ' . $email . "\r\n";
-             
             $sent_email =  wp_mail($to, $subject, \strip_tags($message), $headers);
+
             if ($sent_email) {
-                $response - array(
+                $response = array(
                     'success' =>true,
                     'message' => 'Your message sent successfully'
                 );
                 wp_send_json_success($response);
             }else{
-                $response - array(
+                $response = array(
                     'success' =>false,
                     'message' => 'Failed to send the message'
                 );
+                error_log(print_r($sent_email, true));
                 wp_send_json_error($response);
             }
 
@@ -185,9 +199,9 @@ class Hook_Registry {
 	* @param string|array|object $log
 	*/ 
     function write_to_log($content){
-        if (true === WP_DEBUG) {
-            $file = fopen("../custom_logs.log","a"); 
-            //$file = fopen(PAPA_SITE_DIR . '/custom_logs.log', "a");
+        //if (true === WP_DEBUG) {
+            //$file = fopen("../custom_logs.log","a"); 
+            $file = fopen(PAPA_SITE_DIR . '/custom_logs.log', "a+");
             $message = "";
             if (is_array($content) || is_object($content)) {
                 //error_log(print_r($content, true));
@@ -204,7 +218,7 @@ class Hook_Registry {
             echo fwrite($file, "\n" . date('Y-m-d h:i:s') . " :: " . $message); 
             fclose($file);
             
-        }  
+        //}  
     }
 
     /**
@@ -238,6 +252,14 @@ class Hook_Registry {
             $response['message'] = 'Test User created...';
             wp_send_json_success($response); 
         }
+    }
+
+    public function papa_test_the_error_log(){
+        error_log('Testing the error log');
+    }
+
+    public function papa_log_failed_to_send_email($wp_error){
+        return error_log(print_r($wp_error, true));
     }
 
 }
