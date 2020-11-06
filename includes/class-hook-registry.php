@@ -53,9 +53,7 @@ class Hook_Registry {
 
     public  function  papa_load_custom_scripts(){
         //wp_enqueue_style('papa-site-css', PAPA_SITE_PLUGIN_URL.'assets/css/papa-site.css' );
-        wp_enqueue_style('papa-tooltip-css', PAPA_SITE_PLUGIN_URL.'assets/vendor/tooltip/tooltip.css');
-        wp_enqueue_script('papa-tooltip-js', PAPA_SITE_PLUGIN_URL.'assets/vendor/tooltip/tooltip.js', array('jquery'), null);
-        wp_enqueue_script('papa-site-js', PAPA_SITE_PLUGIN_URL.'assets/js/papa.js', array('jquery','papa-tooltip-js'), null);
+        wp_enqueue_script('papa-site-js', PAPA_SITE_PLUGIN_URL.'assets/js/papa.js', array('jquery'), null);
         //localize the script to your domain name, so that you can reference the url to admin-ajax.php file easily
         wp_localize_script('papa-site-js', 'siteData', array(
             'ajaxurl' =>admin_url('admin-ajax.php')

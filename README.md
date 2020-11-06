@@ -25,7 +25,7 @@ It requires a [wordpress installation](https://wordpress.org/) and [wocommerce i
 # Available For Hire
 - Website Development
 - Custom Wordpress Plugin and Theme development
-- Malware removal and cleaning services
+- Website Security Hardening and malware removal
 - Website Optimisation
 [contact Me](https://tupimelab.com)
 

@@ -105,7 +105,51 @@
             })
         })
 
+        
+         //configure the tooltip for the mobile devices
+        if (window.matchMedia("(max-width: 767px)").matches) {
+            //init pop-ups
+            $('.mobile-tooltip').attr('data-close', false);
+             //click on pop-up opener.
+             //pop-up is expected to be a child of opener
+            $('.varrow-tooltip').click(function(){
+                var $title = $(this).find(".mobile-tooltip");
+                //open if not marked for closing
+                if ($title.attr("data-close") === "false") {
+                    $title.show();
+                }
+                //reset popup         
+                $title.attr("data-close", false);
+            })
 
+             //mark pop-up for closing if clicked on
+             //close is initiated by document.mouseup, 
+             //marker will stop opener from re-opening it
+            $(".mobile-tooltip").click(function () {
+               $(this).attr("data-close",true);
+            });
+
+            //hide all pop-ups
+            $(document).mouseup(function () {
+               $(".mobile-tooltip").hide();
+            });
+
+           //show on rollover if mouse is used
+            $(".varrow-tooltip").mouseenter(function () {
+              var $title = $(this).find(".mobile-tooltip");
+              $title.show();
+            });
+
+            //hide on roll-out
+            $(".varrow-tooltip").mouseleave(function () {
+               var $title = $(this).find(".mobile-tooltip");
+               $title.hide();
+            });
+
+        } else {
+            console.log('we are on desktop')
+        }
+        
     })
 
     
